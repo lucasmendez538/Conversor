@@ -1,0 +1,22 @@
+// manifest.json
+{
+  "name": "Conversor de Tasas Financieras",
+  "short_name": "Conversor",
+  "start_url": "/Conversor_Testeado_LM.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/Imagen_1.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/Imagen_2.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

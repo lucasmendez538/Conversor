@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor y Calculador de Tasas</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff"/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- El CSS ahora está DENTRO de la etiqueta <style> --- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 35px 45px;
+            width: 100%;
+            max-width: 680px;
+            box-sizing: border-box;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px 35px;
+            margin-bottom: 40px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        .result-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .result-box {
+            background-color: #fdfdfd;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .result-box h2 {
+            color: #34495e;
+            font-size: 19px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ececec;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-item span:first-child {
+            color: #555;
+            font-size: 15px;
+        }
+        .result-item span:last-child {
+            color: #007bff;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .projection-section {
+            background-color: #eaf3ff;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        }
+        .projection-section h2 {
+            color: #0056b3;
+            font-size: 22px;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        .projection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed #c0d9f0;
+        }
+        .projection-item:last-child {
+            border-bottom: none;
+        }
+        .projection-item span:first-child {
+            color: #004085;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .projection-item span:last-child {
+            color: #0056b3;
+            font-weight: 800;
+            font-size: 18px;
+        }
+        select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 24px;
+            padding-right: 40px;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #7f8c8d;
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Conversor y Calculador de Tasas</h1>
+        <p class="subtitle">Ingresa una tasa para convertirla y proyectar su rendimiento.</p>
+
+        <div class="input-grid">
+            <div class="form-group">
+                <label for="valorTasa">Valor de la Tasa (%)</label>
+                <input type="number" id="valorTasa" value="21.48" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="frecuenciaCapitalizaciones">Capitalizaciones</label>
+                <select id="frecuenciaCapitalizaciones">
+                    <option value="noAplica">No aplica</option>
+                    <option value="anioCalendario">Por año calendario</option>
+                    <option value="anioComercial">Por año comercial</option>
+                    <option value="dia">Por día</option>
+                    <option value="mes" selected>Por mes</option>
+                    <option value="bimestral">Bimestral</option>
+                    <option value="trimestral">Trimestral</option>
+                    <option value="cuatrimestral">Cuatrimestral</option>
+                    <option value="semestral">Semestral</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipoTasaIngresada">Tipo de Tasa Ingresada</label>
+                <select id="tipoTasaIngresada">
+                    <option value="TEA">Efectiva Anual (TEA)</option>
+                    <option value="TEM">Efectiva Mensual (TEM)</option>
+                    <option value="TNA">Nominal Anual (TNA)</option>
+                    <option value="TNM">Nominal Mensual (TNM)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mesesProyeccion">Cantidad de Meses para Proyección (n)</label>
+                <select id="mesesProyeccion">
+                    </select>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <div class="result-box">
+                <h2>Tasas Efectivas Equivalentes</h2>
+                <div class="result-item">
+                    <span>Tasa Efectiva Anual (TEA):</span>
+                    <span id="outputTEA"></span>
+                </div>
+                <div class="result-item">
+                    <span>Tasa Efectiva Mensual (TEM):</span>
+                    <span id="outputTEM"></span>
+                </div>
+            </div>
+            <div class="result-box">
+                <h2>Tasas Nominales</h2>
+                <div class="result-item">
+                    <span>Tasa Nominal Anual (TNA):</span>
+                    <span id="outputTNA"></span>
+                </div>
+                <div class="result-item">
+                    <span>Tasa Nominal Mensual (TNM):</span>
+                    <span id="outputTNM"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="projection-section">
+            <h2>Proyección de Inversión</h2>
+            <div class="projection-item">
+                <span>Factor de Capitalización (n meses):</span>
+                <span id="outputFactorCapitalizacion"></span>
+            </div>
+            <div class="projection-item">
+                <span>Monto Final (\$1.000 invertidos en n meses):</span>
+                <span id="outputMontoFinal"></span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            La información proporcionada en este conversor es solo para fines informativos y no constituye asesoramiento financiero. Consulte a un profesional para decisiones de inversión.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const valorTasaInput = document.getElementById('valorTasa');
+            const tipoTasaIngresadaSelect = document.getElementById('tipoTasaIngresada');
+            const frecuenciaCapitalizacionesSelect = document.getElementById('frecuenciaCapitalizaciones');
+            const mesesProyeccionSelect = document.getElementById('mesesProyeccion');
+            const outputTEA = document.getElementById('outputTEA');
+            const outputTEM = document.getElementById('outputTEM');
+            const outputTNA = document.getElementById('outputTNA');
+            const outputTNM = document.getElementById('outputTNM');
+            const outputFactorCapitalizacion = document.getElementById('outputFactorCapitalizacion');
+            const outputMontoFinal = document.getElementById('outputMontoFinal');
+
+            // Populate months dropdown from 1 to 100
+            for (let i = 1; i <= 100; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i + ' meses';
+                mesesProyeccionSelect.appendChild(option);
+            }
+            mesesProyeccionSelect.value = 12; // Set initial selected value
+
+            function calculateRates() {
+                let valorTasa = parseFloat(valorTasaInput.value) / 100; // Convert to decimal
+                const tipoTasa = tipoTasaIngresadaSelect.value;
+                const mesesProyeccion = parseInt(mesesProyeccionSelect.value);
+                const frecuenciaCapitalizacion = frecuenciaCapitalizacionesSelect.value;
+
+                if (isNaN(valorTasa) || valorTasa < 0) {
+                    valorTasa = 0; 
+                }
+
+                let tea, tem, tna, tnm;
+
+                // Helper function to get m (number of compounding periods per year) based on capitalization frequency
+                function getM(freq) {
+                    switch(freq) {
+                        case 'noAplica': return 1; // Special case, might need specific logic for TNA/TNM direct
+                        case 'anioCalendario': return 1;
+                        case 'anioComercial': return 1;
+                        case 'dia': return 365;
+                        case 'mes': return 12;
+                        case 'bimestral': return 6;
+                        case 'trimestral': return 4;
+                        case 'cuatrimestral': return 3;
+                        case 'semestral': return 2;
+                        default: return 12; // Default to monthly if not specified or unrecognized
+                    }
+                }
+
+                switch (tipoTasa) {
+                    case 'TEA':
+                        tea = valorTasa;
+                        tem = Math.pow((1 + tea), (1/12)) - 1;
+                        tna = tem * 12; // TNA as monthly capitalized, derived from TEM
+                        tnm = tem; // TNM is TEM if monthly capitalized
+                        break;
+                    case 'TEM':
+                        tem = valorTasa;
+                        tea = Math.pow((1 + tem), 12) - 1;
+                        tna = tem * 12;
+                        tnm = tem;
+                        break;
+                    case 'TNA':
+                        tna = valorTasa;
+                        // To derive effective rates from TNA, we need the capitalization frequency
+                        // For display purposes, we'll assume monthly capitalization for TNA to TEM/TEA conversion
+                        // This might need refinement based on exact financial definitions of TNA use
+                        let m = getM(frecuenciaCapitalizacion);
+                        if (m === 0) m = 12; // Avoid division by zero, default to monthly
+                        tem = tna / m;
+                        tea = Math.pow((1 + tem), m) - 1;
+                        tnm = tna / 12; // TNM always TNA/12
+                        break;
+                    case 'TNM':
+                        tnm = valorTasa;
+                        tem = tnm; // TNM is effectively TEM if compounded monthly
+                        tea = Math.pow((1 + tem), 12) - 1;
+                        tna = tnm * 12; // TNA is TNM * 12
+                        break;
+                    default:
+                        tea = 0;
+                        tem = 0;
+                        tna = 0;
+                        tnm = 0;
+                }
+                
+                // Proyección de Inversión (always based on TEM for monthly projection)
+                const montoInicial = 1000;
+                const factorCapitalizacion = Math.pow((1 + tem), mesesProyeccion);
+                const montoFinal = montoInicial * factorCapitalizacion;
+
+                // Update HTML values
+                outputTEA.textContent = (tea * 100).toFixed(4) + '%';
+                outputTEM.textContent = (tem * 100).toFixed(4) + '%';
+                outputTNA.textContent = (tna * 100).toFixed(4) + '%';
+                outputTNM.textContent = (tnm * 100).toFixed(4) + '%'; 
+
+                outputFactorCapitalizacion.textContent = factorCapitalizacion.toFixed(4);
+                outputMontoFinal.textContent = '$' + montoFinal.toFixed(2);
+            }
+
+            // Event Listeners
+            valorTasaInput.addEventListener('input', calculateRates);
+            tipoTasaIngresadaSelect.addEventListener('change', calculateRates);
+            frecuenciaCapitalizacionesSelect.addEventListener('change', calculateRates);
+            mesesProyeccionSelect.addEventListener('change', calculateRates);
+            
+            // Initial calculation on page load
+            calculateRates();
+        });
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
